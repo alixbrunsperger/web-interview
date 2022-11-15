@@ -8,27 +8,15 @@ import {
   ListItemIcon,
   Typography,
 } from '@mui/material'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import { TodoListForm } from './TodoListForm'
+import { fetchTodoLists, updateTodoList } from '../../lib/fetch'
 
-// Simulate network
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-
-const fetchTodoLists = () => {
-  return sleep(1000).then(() =>
-    Promise.resolve({
-      '0000000001': {
-        id: '0000000001',
-        title: 'First List',
-        todos: ['First todo of first list!'],
-      },
-      '0000000002': {
-        id: '0000000002',
-        title: 'Second List',
-        todos: ['First todo of second list!'],
-      },
-    })
-  )
+const isListCompleted = (todoList) => {
+  const todos = Object.values(todoList.todos)
+  const completedTodos = todos.filter(({ completed }) => !!completed)
+  return completedTodos.length === todos.length
 }
 
 export const TodoLists = ({ style }) => {
@@ -49,7 +37,8 @@ export const TodoLists = ({ style }) => {
             {Object.keys(todoLists).map((key) => (
               <ListItem key={key} button onClick={() => setActiveList(key)}>
                 <ListItemIcon>
-                  <ReceiptIcon />
+                  <ReceiptIcon color={key === activeList ? 'secondary' : 'action'} />
+                  {isListCompleted(todoLists[key]) ? <CheckCircleIcon color={'success'} /> : null}
                 </ListItemIcon>
                 <ListItemText primary={todoLists[key].title} />
               </ListItem>
@@ -57,19 +46,20 @@ export const TodoLists = ({ style }) => {
           </List>
         </CardContent>
       </Card>
-      {todoLists[activeList] && (
+      {todoLists[activeList] ? (
         <TodoListForm
           key={activeList} // use key to make React recreate component to reset internal state
           todoList={todoLists[activeList]}
           saveTodoList={(id, { todos }) => {
-            const listToUpdate = todoLists[id]
+            const updatedList = { ...todoLists[id], todos }
+            updateTodoList(updatedList)
             setTodoLists({
               ...todoLists,
-              [id]: { ...listToUpdate, todos },
+              [id]: updatedList,
             })
           }}
         />
-      )}
+      ) : null}
     </Fragment>
   )
 }
