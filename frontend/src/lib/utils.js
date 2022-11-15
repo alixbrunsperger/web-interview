@@ -8,9 +8,9 @@ export const getBadgeColor = (numberOfDays) => {
     }
 }
 
-export const getBadgeContent = (deadline) => {
+export const getNumberOfDays = (deadline) => {
     const deadlineDate = new Date(deadline)
     const todayDate = new Date()
     const dateDifference = deadlineDate.getTime() - todayDate.getTime()
-    return Math.floor(dateDifference / (1000 * 3600 * 24)) + 1
+    return Math.floor(dateDifference / (1000 * 3600 * 24)) + 1;
 }

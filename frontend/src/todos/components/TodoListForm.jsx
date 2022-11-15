@@ -15,6 +15,11 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
     saveTodoList(todoList.id, { todos })
   }
 
+  const saveTodos = (todos) => {
+    saveTodoList(todoList.id, { todos })
+    setTodos(todos)
+  }
+
   return (
     <Card sx={{ margin: '0 1rem' }}>
       <CardContent>
@@ -36,13 +41,11 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                   value={title}
                   //disabled={completed}
                   onChange={(event) => {
-                    const updatedTodos = {
+                    saveTodos({
                       // immutable update
                       ...todos,
                       [id]: { ...todo, title: event.target.value },
-                    }
-                    saveTodoList(todoList.id, { todos: updatedTodos })
-                    setTodos(updatedTodos)
+                    })
                   }}
                 />
                 <TextField
@@ -52,13 +55,11 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                   type='date'
                   defaultValue={deadline}
                   onChange={(event) => {
-                    const updatedTodos = {
+                    saveTodos({
                       // immutable update
                       ...todos,
                       [id]: { ...todo, deadline: event.target.value },
-                    }
-                    saveTodoList(todoList.id, { todos: updatedTodos })
-                    setTodos(updatedTodos)
+                    })
                   }}
                   InputLabelProps={{
                     shrink: true,
@@ -70,13 +71,11 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                   size='small'
                   color='secondary'
                   onClick={() => {
-                    const updatedTodos = {
+                    saveTodos({
                       // immutable update
                       ...todos,
                       [id]: { ...todo, completed: !completed },
-                    }
-                    saveTodoList(todoList.id, { todos: updatedTodos })
-                    setTodos(updatedTodos)
+                    })
                   }}
                 >
                   <CheckCircleIcon color={completed ? 'success' : 'disabled'} />
@@ -88,8 +87,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                   onClick={() => {
                     // immutable delete
                     const { [id]: todo, ...newTodos } = todos
-                    saveTodoList(todoList.id, { todos: newTodos })
-                    setTodos(newTodos)
+                    saveTodos(newTodos)
                   }}
                 >
                   <DeleteIcon />
